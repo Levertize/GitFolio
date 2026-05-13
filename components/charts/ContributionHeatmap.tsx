@@ -52,9 +52,11 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
     const height = gridHeight + margin.top + margin.bottom;
 
     svg.attr("viewBox", `0 0 ${width} ${height}`)
-       .attr("width", "100%")
+       .style("width", `${(weeksToShow / 53) * 100}%`)
+       .style("min-width", range === "1y" ? "100%" : "auto")
        .attr("height", "auto")
-       .style("overflow", "visible");
+       .style("overflow", "visible")
+       .style("transition", "width 0.4s ease-out");
 
     const g = svg.append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -162,7 +164,8 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
       tooltip.style("opacity", 0).style("display", "none");
     });
 
-  }, [data, loading, colorScheme]);
+  }, [data, loading, colorScheme, range]);
+
 
   if (loading) {
     return (
