@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import ContributionHeatmap from "@/components/charts/ContributionHeatmap";
 import LanguageChart from "@/components/charts/LanguageChart";
+import { ShareCard } from "@/components/dashboard/ShareCard";
 
 dayjs.extend(relativeTime);
 
@@ -71,6 +72,8 @@ export default function DashboardPage() {
     }
   }, [status]);
 
+  const userUsername = stats?.username || session?.user?.name?.toLowerCase().replace(/\s/g, "");
+
   if (status === "loading") return <DashboardSkeleton />;
   if (error) return <ErrorState error={error} retry={fetchStats} />;
 
@@ -88,13 +91,13 @@ export default function DashboardPage() {
             <img src={session?.user?.image || ""} alt="" className="w-10 h-10 rounded-full border border-white/10" />
             <div className="overflow-hidden">
               <div className="font-medium truncate">{session?.user?.name}</div>
-              <div className="text-xs text-gray-500 truncate">@{session?.user?.name?.toLowerCase().replace(/\s/g, "")}</div>
+              <div className="text-xs text-gray-500 truncate">@{userUsername}</div>
             </div>
           </div>
 
           <nav className="space-y-1">
             <NavLink icon={<LayoutDashboard size={18} />} label="Dashboard" active />
-            <NavLink icon={<User size={18} />} label="Portfolio" href={`/${session?.user?.name?.toLowerCase().replace(/\s/g, "")}`} />
+            <NavLink icon={<User size={18} />} label="Portfolio" href={`/${userUsername}`} />
             <NavLink icon={<Notebook size={18} />} label="Notes" />
             <NavLink icon={<Settings size={18} />} label="Settings" />
           </nav>
@@ -130,10 +133,14 @@ export default function DashboardPage() {
               className="bg-white/5 border-white/10 text-white hover:bg-white/10 h-9"
             >
               <RefreshCw size={14} className={`mr-2 ${syncing ? "animate-spin" : ""}`} />
-              {syncing ? "Syncing..." : "Sync GitHub"}
+              {syncing ? "Syncing..." : "Refresh"}
             </Button>
-            <Link href={`/${session?.user?.name?.toLowerCase().replace(/\s/g, "")}`}>
-              <Button size="sm" className="bg-green-500 hover:bg-green-600 text-black h-9 px-4 rounded-md font-semibold">
+            
+            {/* Share Modal Button */}
+            <ShareCard username={userUsername} />
+
+            <Link href={`/${userUsername}`}>
+              <Button size="sm" className="bg-white hover:bg-gray-200 text-black h-9 px-4 rounded-md font-bold">
                 View Portfolio <ChevronRight size={14} className="ml-1" />
               </Button>
             </Link>

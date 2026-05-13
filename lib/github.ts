@@ -348,6 +348,7 @@ export const syncUserData = async (userId: string, token: string) => {
     // 3. Upsert github_stats
     const statsData: any = {
       user_id: userId,
+      username: profile.login,
       total_commits: contributions.reduce((acc, day) => acc + day.count, 0),
       total_stars: totalStars,
       total_repos: repos.length,
@@ -374,6 +375,7 @@ export const syncUserData = async (userId: string, token: string) => {
       if (statsError.code === '42703' || statsError.code === 'PGRST204') {
         console.warn("Schema mismatch detected, falling back to base stats sync.");
         delete statsData.recent_activity;
+        delete statsData.username; // Also delete username if it fails
         const { data: retryData, error: retryError } = await supabase
           .from("github_stats")
           .upsert(statsData, { onConflict: "user_id" })
@@ -381,7 +383,7 @@ export const syncUserData = async (userId: string, token: string) => {
           .single();
         if (retryError) throw retryError;
         
-        return { ...retryData, recent_activity: recentActivity };
+        return { ...retryData, recent_activity: recentActivity, username: profile.login };
       }
       throw statsError;
     }
