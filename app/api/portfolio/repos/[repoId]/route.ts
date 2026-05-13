@@ -14,12 +14,13 @@ export async function PUT(
   try {
     const { repoId } = params;
     const { custom_description, live_url, screenshot_url, is_featured } = await request.json();
+    
+    console.log(`🛠️ UPDATING REPO: ${repoId} for User: ${session.user.id}`);
+    
     const supabase = createAdminSupabase();
 
-    // In this app, repos might be stored in github_stats as JSONB or a separate table.
-    // Based on the prompt, we are adding columns to a 'repos' table.
-    // Let's assume a 'repos' table exists as per the schema requirements.
-
+    // The error 500 likely happens because the 'repos' table doesn't exist yet
+    // or the 'github_stats' structure is different.
     const { data, error } = await supabase
       .from("repos")
       .update({
@@ -29,14 +30,17 @@ export async function PUT(
         is_featured,
       })
       .eq("id", repoId)
-      .eq("user_id", session.user.id) // Security check
-      .select()
-      .single();
+      .eq("user_id", session.user.id)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("❌ SUPABASE REPO UPDATE ERROR:", error.message, error.code);
+      throw error;
+    }
 
     return NextResponse.json(data);
   } catch (error: any) {
+    console.error("🔥 REPO API FATAL ERROR:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
