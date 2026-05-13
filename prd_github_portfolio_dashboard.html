@@ -1,0 +1,303 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.prd { max-width: 680px; padding: 0 0 2rem; }
+.header { padding: 1.5rem 0 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1.5rem; }
+.badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 99px; margin-bottom: 10px; background: var(--color-background-info); color: var(--color-text-info); }
+.title { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+.subtitle { font-size: 14px; color: var(--color-text-secondary); }
+.meta { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+.meta-item { font-size: 12px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 5px; }
+.meta-item i { font-size: 13px; }
+
+.section { margin-bottom: 2rem; }
+.section-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-tertiary); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.card-title i { font-size: 16px; color: var(--color-text-secondary); }
+.card-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+.pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pill { font-size: 12px; padding: 3px 10px; border-radius: 99px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); background: var(--color-background-secondary); }
+.pill.tech { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; }
+.pill.must { background: var(--color-background-danger); color: var(--color-text-danger); border-color: transparent; }
+.pill.nice { background: var(--color-background-success); color: var(--color-text-success); border-color: transparent; }
+.pill.warn { background: var(--color-background-warning); color: var(--color-text-warning); border-color: transparent; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+.stat-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 3px; }
+.stat-value { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+
+.flow { display: flex; align-items: stretch; gap: 0; margin: 12px 0; }
+.flow-step { flex: 1; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px; font-size: 12px; text-align: center; }
+.flow-step strong { display: block; font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.flow-step span { color: var(--color-text-secondary); }
+.flow-arrow { display: flex; align-items: center; padding: 0 4px; color: var(--color-text-tertiary); font-size: 14px; }
+
+.milestone { border-left: 2px solid var(--color-border-tertiary); padding-left: 14px; margin-bottom: 14px; position: relative; }
+.milestone::before { content: ''; position: absolute; left: -5px; top: 4px; width: 8px; height: 8px; border-radius: 50%; background: var(--color-background-primary); border: 2px solid var(--color-border-secondary); }
+.milestone.done::before { background: var(--color-background-success); border-color: var(--color-background-success); }
+.milestone-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.milestone-week { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+.milestone-items { font-size: 12px; color: var(--color-text-secondary); line-height: 1.8; }
+
+.arch-box { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 14px; }
+.arch-label { font-size: 11px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.arch-item { font-size: 12px; color: var(--color-text-secondary); padding: 3px 0; display: flex; align-items: center; gap: 6px; }
+.arch-item i { font-size: 13px; color: var(--color-text-tertiary); }
+
+.copy-btn { font-size: 12px; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 4px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; float: right; }
+.copy-btn:hover { background: var(--color-background-primary); }
+
+.persona { display: flex; align-items: flex-start; gap: 12px; }
+.avatar { width: 40px; height: 40px; min-width: 40px; border-radius: 50%; background: var(--color-background-info); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 13px; color: var(--color-text-info); }
+.persona-info p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin-top: 3px; }
+
+.tag-must { display: inline-block; font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 99px; background: var(--color-background-danger); color: var(--color-text-danger); margin-left: 6px; vertical-align: middle; }
+.tag-v2 { display: inline-block; font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 99px; background: var(--color-background-warning); color: var(--color-text-warning); margin-left: 6px; vertical-align: middle; }
+</style>
+
+<div class="prd">
+
+<div class="header">
+  <div class="badge"><i class="ti ti-file-description" aria-hidden="true"></i> Product Requirements Document</div>
+  <div class="title">GitFolio — Auto-Generated Dev Portfolio Dashboard</div>
+  <div class="subtitle">GitHub-powered portfolio & coding dashboard untuk fresh graduate dan developer.</div>
+  <div class="meta">
+    <div class="meta-item"><i class="ti ti-user" aria-hidden="true"></i> Author: You</div>
+    <div class="meta-item"><i class="ti ti-calendar" aria-hidden="true"></i> Mei 2026</div>
+    <div class="meta-item"><i class="ti ti-tag" aria-hidden="true"></i> v1.0</div>
+    <div class="meta-item"><i class="ti ti-clock" aria-hidden="true"></i> Est. 3–4 minggu build time</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Problem Statement</div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Masalah yang diselesaikan</div>
+    <div class="card-desc">Fresh graduate sering kesulitan membuat portfolio web yang terlihat profesional karena butuh waktu, skill desain, dan setup yang ribet. Padahal semua data coding mereka sudah ada di GitHub — hanya belum divisualisasikan dengan baik. GitFolio mengambil data GitHub secara otomatis dan mengubahnya menjadi portfolio yang beautiful + dashboard coding yang informatif, tanpa perlu coding manual.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Target User</div>
+  <div class="card">
+    <div class="persona">
+      <div class="avatar">FG</div>
+      <div class="persona-info">
+        <div class="card-title" style="margin-bottom:2px">Fresh Graduate / Junior Developer</div>
+        <p>Punya repo GitHub aktif, belum punya portfolio web yang proper. Mau cari kerja / freelance tapi males setup portfolio dari scratch. Senang pamer progress coding ke teman dan recruiter. Tech-savvy tapi bukan designer.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Core Features</div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-brand-github" aria-hidden="true"></i> GitHub Integration <span class="tag-must">MUST</span></div>
+    <div class="card-desc">Login via GitHub OAuth. Auto-fetch repos, commit history, contribution graph, languages used, dan stats lainnya dari GitHub API. Zero manual input dari user.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Beautiful Portfolio Page <span class="tag-must">MUST</span></div>
+    <div class="card-desc">Public page yang bisa di-share ke recruiter. Menampilkan: bio, top repos dengan preview, language breakdown, contribution heatmap, dan project highlights. URL unik per user: <code>gitfolio.app/username</code>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Coding Activity Graph <span class="tag-must">MUST</span></div>
+    <div class="card-desc">Visualisasi interaktif (D3.js) commit activity per hari/minggu/bulan. GitHub contribution heatmap yang lebih cantik dari versi aslinya. Filter by repo, language, time range.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-clock" aria-hidden="true"></i> Daily Coding Time <span class="tag-v2">V2</span></div>
+    <div class="card-desc">Integrasi WakaTime API untuk menampilkan waktu coding harian per bahasa dan project. Dashboard produktivitas personal.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-notebook" aria-hidden="true"></i> Dev Notes / Journal <span class="tag-v2">V2</span></div>
+    <div class="card-desc">Fitur daily notes untuk logging apa yang dikerjakan hari ini. Auto-link ke commit pada hari yang sama.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-share" aria-hidden="true"></i> Share & Pamer Mode <span class="tag-must">MUST</span></div>
+    <div class="card-desc">Satu-klik generate shareable image (OG card) dari stats coding kamu — siap di-post ke LinkedIn atau Twitter/X. Streak counter, total commits, languages leaderboard.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Success Metrics — Kunjungan Pertama</div>
+  <div class="stat-grid">
+    <div class="stat">
+      <div class="stat-label">Time to Portfolio</div>
+      <div class="stat-value">&lt; 60s</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Steps to Connect</div>
+      <div class="stat-value">1 klik</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Data loaded</div>
+      <div class="stat-value">Auto</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Share Ready</div>
+      <div class="stat-value">Day 1</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">User Flow Utama</div>
+  <div class="flow">
+    <div class="flow-step"><strong>Landing</strong><span>Value prop + CTA</span></div>
+    <div class="flow-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    <div class="flow-step"><strong>OAuth</strong><span>GitHub login</span></div>
+    <div class="flow-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    <div class="flow-step"><strong>Setup</strong><span>Pilih repos, bio</span></div>
+    <div class="flow-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    <div class="flow-step"><strong>Dashboard</strong><span>Stats + grafik</span></div>
+    <div class="flow-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    <div class="flow-step"><strong>Portfolio</strong><span>Public page</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Arsitektur & Tech Stack</div>
+  <div class="grid-2">
+    <div class="arch-box">
+      <div class="arch-label">Frontend</div>
+      <div class="arch-item"><i class="ti ti-brand-react" aria-hidden="true"></i> Next.js 14 (App Router)</div>
+      <div class="arch-item"><i class="ti ti-palette" aria-hidden="true"></i> Tailwind CSS + shadcn/ui</div>
+      <div class="arch-item"><i class="ti ti-chart-dots" aria-hidden="true"></i> D3.js — chart custom</div>
+      <div class="arch-item"><i class="ti ti-sparkles" aria-hidden="true"></i> Framer Motion — animasi</div>
+      <div class="arch-item"><i class="ti ti-photo" aria-hidden="true"></i> satori — OG image gen</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label">Backend</div>
+      <div class="arch-item"><i class="ti ti-server" aria-hidden="true"></i> Next.js API Routes</div>
+      <div class="arch-item"><i class="ti ti-database" aria-hidden="true"></i> Supabase (Postgres + Auth)</div>
+      <div class="arch-item"><i class="ti ti-key" aria-hidden="true"></i> NextAuth.js — GitHub OAuth</div>
+      <div class="arch-item"><i class="ti ti-refresh" aria-hidden="true"></i> GitHub REST + GraphQL API</div>
+      <div class="arch-item"><i class="ti ti-clock" aria-hidden="true"></i> WakaTime API (v2)</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label">Infra & Deployment</div>
+      <div class="arch-item"><i class="ti ti-brand-vercel" aria-hidden="true"></i> Vercel — deploy + edge</div>
+      <div class="arch-item"><i class="ti ti-refresh" aria-hidden="true"></i> Vercel Cron — data sync</div>
+      <div class="arch-item"><i class="ti ti-bolt" aria-hidden="true"></i> Upstash Redis — caching</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label">Data Strategy</div>
+      <div class="arch-item"><i class="ti ti-clock" aria-hidden="true"></i> Cache GitHub data 1 jam</div>
+      <div class="arch-item"><i class="ti ti-refresh" aria-hidden="true"></i> Background sync harian</div>
+      <div class="arch-item"><i class="ti ti-database" aria-hidden="true"></i> Simpan snapshot di Supabase</div>
+      <div class="arch-item"><i class="ti ti-bolt" aria-hidden="true"></i> Redis untuk rate limit aman</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Struktur Folder (Next.js)</div>
+  <div class="card" style="font-family: var(--font-mono); font-size: 12px; color: var(--color-text-secondary); line-height: 2;">
+    <div>📁 app/</div>
+    <div>&nbsp;&nbsp;📁 (auth)/ &nbsp;<span style="color:var(--color-text-tertiary)">— login, callback</span></div>
+    <div>&nbsp;&nbsp;📁 dashboard/ &nbsp;<span style="color:var(--color-text-tertiary)">— private dashboard</span></div>
+    <div>&nbsp;&nbsp;📁 [username]/ &nbsp;<span style="color:var(--color-text-tertiary)">— public portfolio page</span></div>
+    <div>&nbsp;&nbsp;📁 api/ &nbsp;<span style="color:var(--color-text-tertiary)">— github sync, wakatime, og-image</span></div>
+    <div>📁 components/</div>
+    <div>&nbsp;&nbsp;📁 charts/ &nbsp;<span style="color:var(--color-text-tertiary)">— D3 components</span></div>
+    <div>&nbsp;&nbsp;📁 portfolio/ &nbsp;<span style="color:var(--color-text-tertiary)">— public page sections</span></div>
+    <div>&nbsp;&nbsp;📁 dashboard/ &nbsp;<span style="color:var(--color-text-tertiary)">— private dashboard widgets</span></div>
+    <div>📁 lib/ &nbsp;<span style="color:var(--color-text-tertiary)">— github api, wakatime, supabase client</span></div>
+    <div>📁 hooks/ &nbsp;<span style="color:var(--color-text-tertiary)">— useGithubStats, useWakatime</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Database Schema (Supabase)</div>
+  <div class="grid-2">
+    <div class="arch-box">
+      <div class="arch-label">users</div>
+      <div class="arch-item">id, github_id, username</div>
+      <div class="arch-item">avatar_url, bio, email</div>
+      <div class="arch-item">wakatime_token (encrypted)</div>
+      <div class="arch-item">created_at, updated_at</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label">github_stats</div>
+      <div class="arch-item">user_id, total_commits</div>
+      <div class="arch-item">languages (JSON)</div>
+      <div class="arch-item">contribution_data (JSON)</div>
+      <div class="arch-item">synced_at</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label">repos</div>
+      <div class="arch-item">id, user_id, github_repo_id</div>
+      <div class="arch-item">name, description, url</div>
+      <div class="arch-item">stars, forks, language</div>
+      <div class="arch-item">is_pinned (by user)</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label">dev_notes</div>
+      <div class="arch-item">id, user_id, date</div>
+      <div class="arch-item">content (markdown)</div>
+      <div class="arch-item">linked_commits (JSON)</div>
+      <div class="arch-item">created_at</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Milestones & Sprint Plan</div>
+
+  <div class="milestone">
+    <div class="milestone-week">Week 1</div>
+    <div class="milestone-title">🏗 Foundation</div>
+    <div class="milestone-items">Setup Next.js + Supabase + NextAuth GitHub OAuth · Landing page · Dashboard layout · GitHub API service layer</div>
+  </div>
+
+  <div class="milestone">
+    <div class="milestone-week">Week 2</div>
+    <div class="milestone-title">📊 Core Dashboard</div>
+    <div class="milestone-items">Contribution heatmap (D3) · Language breakdown chart · Repo cards dengan stats · Commit activity timeline</div>
+  </div>
+
+  <div class="milestone">
+    <div class="milestone-week">Week 3</div>
+    <div class="milestone-title">🌐 Public Portfolio Page</div>
+    <div class="milestone-items">Public [username] route · Portfolio sections: hero, projects, skills · OG image generation · Share button</div>
+  </div>
+
+  <div class="milestone">
+    <div class="milestone-week">Week 4</div>
+    <div class="milestone-title">✨ Polish & Deploy</div>
+    <div class="milestone-items">Animasi + loading states · Mobile responsive · Deploy ke Vercel · Redis caching · README + demo GIF untuk GitHub</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Tech Stack Summary</div>
+  <div class="pill-group">
+    <span class="pill tech">Next.js 14</span>
+    <span class="pill tech">TypeScript</span>
+    <span class="pill tech">Tailwind CSS</span>
+    <span class="pill tech">shadcn/ui</span>
+    <span class="pill tech">D3.js</span>
+    <span class="pill tech">Framer Motion</span>
+    <span class="pill tech">Supabase</span>
+    <span class="pill tech">NextAuth.js</span>
+    <span class="pill tech">GitHub API</span>
+    <span class="pill tech">Upstash Redis</span>
+    <span class="pill tech">Vercel</span>
+    <span class="pill tech">satori</span>
+  </div>
+</div>
+
+</div>
