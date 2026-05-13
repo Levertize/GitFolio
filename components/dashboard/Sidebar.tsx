@@ -2,16 +2,17 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { 
-  LayoutDashboard, User, Settings, Notebook, LogOut, ChevronLeft
+  LayoutDashboard, User, Settings, Notebook, LogOut
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function Sidebar({ username }: { username?: string }) {
+export function Sidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   
-  const displayUsername = username || session?.user?.username || session?.user?.name?.toLowerCase().replace(/\s/g, "");
+  // Use the username directly from the session
+  const displayUsername = session?.user?.username || session?.user?.name?.toLowerCase().replace(/\s/g, "");
 
   return (
     <aside className="w-64 border-r border-white/5 flex flex-col shrink-0 h-screen sticky top-0 bg-[#0a0a0a] hidden md:flex">
