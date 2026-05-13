@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@/auth";
+import { unstable_noStore as noStore } from "next/cache";
 import { 
   Github, MapPin, Link as LinkIcon, Star, GitFork, 
   ExternalLink, LayoutDashboard 
@@ -21,19 +22,26 @@ interface PageProps {
 async function getPortfolioData(username: string) {
   const supabase = createAdminSupabase();
 
-  console.log(`🔍 FETCHING PORTFOLIO FOR: "${username}"`);
+  const searchName = username.toLowerCase().trim();
+  console.log(`🔍 FETCHING PORTFOLIO FOR: "${searchName}"`);
 
+  // Use maybeSingle() to avoid "Cannot coerce" errors if something is wrong with the query
   const { data: user, error } = await supabase
     .from("users")
     .select(`
       *,
       github_stats (*)
     `)
-    .ilike("username", username)
-    .single();
+    .ilike("username", searchName)
+    .maybeSingle();
 
-  if (error || !user) {
-    console.warn("⚠️ USER NOT FOUND OR DB ERROR", error?.message);
+  if (error) {
+    console.error("❌ SUPABASE DB ERROR:", error.message);
+    return null;
+  }
+
+  if (!user) {
+    console.warn("⚠️ USER NOT FOUND IN DATABASE");
     return null;
   }
 
@@ -74,17 +82,36 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PortfolioPage({ params }: PageProps) {
+  noStore();
   const user = await getPortfolioData(params.username);
   const session = await auth();
 
   if (!user) notFound();
 
-  // FIX: Access github_stats correctly from the joined array
-  const stats = user.github_stats?.[0] || {};
-  const topRepos = stats.top_repos || [];
-  
+  console.log("🛠️ FULL USER OBJECT FROM DB:", JSON.stringify({
+    id: user.id,
+    username: user.username,
+    has_stats: !!user.github_stats,
+    stats_length: user.github_stats?.length
+  }, null, 2));
+
+  // --- TARGETED FIX: Defensive Data Handling ---
+  // Supabase returns joined tables as an array or a single object depending on the query
+  const rawStats = user.github_stats;
+  const stats = Array.isArray(rawStats) ? rawStats[0] : rawStats;
+
+  const displayStats = {
+    total_repos: stats?.total_repos ?? 0,
+    total_stars: stats?.total_stars ?? 0,
+    followers: stats?.followers ?? 0,
+    languages: stats?.languages ?? {},
+    contribution_data: stats?.contribution_data ?? [],
+    top_repos: stats?.top_repos ?? []
+  };
+  // ----------------------------------------------
+
   // Determine primary color from top language for the mesh gradient
-  const topLang = stats.languages ? Object.entries(stats.languages).sort(([,a], [,b]) => (b as number) - (a as number))[0]?.[0] : null;
+  const topLang = displayStats.languages ? Object.entries(displayStats.languages).sort(([,a], [,b]) => (b as number) - (a as number))[0]?.[0] : null;
   const accentColor = topLang === 'TypeScript' ? '#3178c6' : 
                       topLang === 'JavaScript' ? '#f1e05a' : 
                       topLang === 'Python' ? '#3572A5' : 
@@ -96,9 +123,9 @@ export default async function PortfolioPage({ params }: PageProps) {
       {session && (
         <div className="fixed top-6 right-6 z-50 animate-fade-in">
           <Link href="/dashboard">
-            <Button className="rounded-full bg-background/90 backdrop-blur-md border border-green-500/50 shadow-[0_0_15px_rgba(74,222,128,0.4)] hover:shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:scale-105 transition-all font-bold text-xs gap-2 py-2 px-5 h-auto group">
+            <Button className="rounded-full bg-background/90 backdrop-blur-md border border-green-500/50 shadow-[0_0_15px_rgba(74,222,128,0.4)] hover:shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:scale-105 transition-all font-bold text-xs gap-2 py-2 px-5 h-auto group text-foreground">
               <LayoutDashboard size={14} className="group-hover:text-green-400 transition-colors" /> 
-              <span className="text-foreground">Back to Dashboard</span>
+              Back to Dashboard
             </Button>
           </Link>
         </div>
@@ -106,7 +133,6 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* 1. HERO SECTION */}
       <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden border-b">
-        {/* Subtle Mesh Gradient */}
         <div 
           className="absolute inset-0 -z-10 opacity-20 blur-[100px]"
           style={{
@@ -115,9 +141,9 @@ export default async function PortfolioPage({ params }: PageProps) {
           }}
         />
 
-        <div className="container max-w-5xl mx-auto px-6 font-sans">
+        <div className="container max-w-5xl mx-auto px-6 font-sans text-left">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
-            <div className="relative">
+            <div className="relative shrink-0">
               <img 
                 src={user.avatar_url || ""} 
                 alt={user.username} 
@@ -126,7 +152,7 @@ export default async function PortfolioPage({ params }: PageProps) {
               <div className="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-background" title="Available for work" />
             </div>
 
-            <div className="flex-1 text-center md:text-left space-y-4">
+            <div className="flex-1 space-y-4">
               <div className="space-y-1">
                 <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
                   {user.name || user.username}
@@ -138,7 +164,7 @@ export default async function PortfolioPage({ params }: PageProps) {
                 {user.bio || "No bio provided."}
               </p>
 
-              <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm font-medium">
+              <div className="flex flex-wrap gap-4 text-sm font-medium">
                 {user.location && (
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <MapPin size={16} /> {user.location}
@@ -151,24 +177,24 @@ export default async function PortfolioPage({ params }: PageProps) {
                 )}
               </div>
 
-              <div className="flex flex-wrap justify-center md:justify-start items-center gap-6 py-4">
-                <div className="text-center md:text-left">
-                  <div className="text-2xl font-bold">{stats.total_repos || 0}</div>
+              <div className="flex flex-wrap items-center gap-6 py-4">
+                <div>
+                  <div className="text-2xl font-bold">{displayStats.total_repos}</div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Repos</div>
                 </div>
                 <div className="h-8 w-px bg-border hidden sm:block" />
-                <div className="text-center md:text-left">
-                  <div className="text-2xl font-bold">{stats.total_stars || 0}</div>
+                <div>
+                  <div className="text-2xl font-bold">{displayStats.total_stars}</div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Stars</div>
                 </div>
                 <div className="h-8 w-px bg-border hidden sm:block" />
-                <div className="text-center md:text-left">
-                  <div className="text-2xl font-bold">{stats.followers || 0}</div>
+                <div>
+                  <div className="text-2xl font-bold">{displayStats.followers}</div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Followers</div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap justify-center md:justify-start gap-3 pt-2">
+              <div className="flex flex-wrap gap-3 pt-2">
                 <a href={`https://github.com/${user.username}`} target="_blank" rel="noopener">
                   <Button className="rounded-full px-6 font-bold shadow-lg hover:shadow-primary/20 transition-all">
                     <Github className="mr-2" size={18} /> Follow on GitHub
@@ -187,14 +213,14 @@ export default async function PortfolioPage({ params }: PageProps) {
       <section className="py-20 bg-muted/30">
         <div className="container max-w-5xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1 space-y-6 text-left">
               <h2 className="text-2xl font-bold border-l-4 border-primary pl-4">Skills & Tech</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Analysis based on the volume of code pushed across {stats.total_repos || 0} repositories.
+                Analysis based on the volume of code pushed across GitHub repositories.
               </p>
             </div>
             <div className="lg:col-span-2">
-              <LanguageChart languages={stats.languages || {}} />
+              <LanguageChart languages={displayStats.languages} />
             </div>
           </div>
         </div>
@@ -203,15 +229,13 @@ export default async function PortfolioPage({ params }: PageProps) {
       {/* 3. FEATURED PROJECTS */}
       <section className="py-20">
         <div className="container max-w-5xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-12">
-            <div className="space-y-2 text-left w-full">
-              <h2 className="text-3xl font-bold tracking-tight text-primary">Featured Projects</h2>
-              <p className="text-muted-foreground">My most impactful work on GitHub.</p>
-            </div>
+          <div className="space-y-2 text-left w-full mb-12">
+            <h2 className="text-3xl font-bold tracking-tight text-primary">Featured Projects</h2>
+            <p className="text-muted-foreground">My most impactful work on GitHub.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {topRepos.length > 0 ? topRepos.map((repo: any) => (
+            {displayStats.top_repos.length > 0 ? displayStats.top_repos.map((repo: any) => (
               <a key={repo.id} href={repo.html_url} target="_blank" rel="noopener" className="group">
                 <Card className="h-full border-2 border-transparent hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-xl bg-card">
                   <CardContent className="p-6 flex flex-col h-full text-left">
@@ -235,8 +259,8 @@ export default async function PortfolioPage({ params }: PageProps) {
                 </Card>
               </a>
             )) : (
-              <div className="col-span-full py-12 text-center border-2 border-dashed rounded-3xl text-muted-foreground">
-                No public repositories found.
+              <div className="col-span-full py-20 text-center border-2 border-dashed rounded-3xl opacity-50">
+                <p>No projects synced yet. Visit dashboard to sync GitHub data.</p>
               </div>
             )}
           </div>
@@ -251,7 +275,7 @@ export default async function PortfolioPage({ params }: PageProps) {
             <p className="text-muted-foreground">Snapshot of my contributions over the past year.</p>
           </div>
           <div className="bg-card p-8 rounded-3xl border-2 shadow-sm overflow-hidden">
-            <ContributionHeatmap data={stats.contribution_data || []} range="1y" />
+            <ContributionHeatmap data={displayStats.contribution_data} range="1y" />
           </div>
         </div>
       </section>

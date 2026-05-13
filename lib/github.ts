@@ -364,6 +364,8 @@ export const syncUserData = async (userId: string, token: string) => {
     // Include recent_activity
     statsData.recent_activity = recentActivity;
 
+    console.log("💾 UPSERTING STATS DATA TO DB...");
+
     const { data: syncedData, error: statsError } = await supabase
       .from("github_stats")
       .upsert(statsData, { onConflict: "user_id" })
@@ -371,6 +373,7 @@ export const syncUserData = async (userId: string, token: string) => {
       .single();
 
     if (statsError) {
+      console.error("❌ SUPABASE UPSERT ERROR:", statsError.code, statsError.message);
       // Handle missing column (42703) OR schema cache mismatch (PGRST204)
       if (statsError.code === '42703' || statsError.code === 'PGRST204') {
         console.warn("Schema mismatch detected, falling back to base stats sync.");
@@ -381,12 +384,17 @@ export const syncUserData = async (userId: string, token: string) => {
           .upsert(statsData, { onConflict: "user_id" })
           .select()
           .single();
-        if (retryError) throw retryError;
-        
+        if (retryError) {
+          console.error("❌ RETRY UPSERT ERROR:", retryError.message);
+          throw retryError;
+        }
+        console.log("✅ RETRY UPSERT SUCCESSFUL");
         return { ...retryData, recent_activity: recentActivity, username: profile.login };
       }
       throw statsError;
     }
+
+    console.log("✅ PRIMARY UPSERT SUCCESSFUL");
 
     // 4. Cache in Redis (Optional)
     if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {

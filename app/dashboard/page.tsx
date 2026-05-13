@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { 
   RefreshCw, Star, GitCommit, BookOpen, Users, 
-  LayoutDashboard, User, Settings, Notebook, ExternalLink,
-  LogOut, ChevronRight
+  ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -18,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import ContributionHeatmap from "@/components/charts/ContributionHeatmap";
 import LanguageChart from "@/components/charts/LanguageChart";
 import { ShareCard } from "@/components/dashboard/ShareCard";
+import { Sidebar } from "@/components/dashboard/Sidebar";
 
 dayjs.extend(relativeTime);
 
@@ -79,40 +79,8 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-[#0a0a0a] text-white">
-      {/* Sidebar */}
-      <aside className="w-64 border-r border-white/5 flex flex-col hidden md:flex">
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 bg-green-500 rounded flex items-center justify-center text-black font-bold">G</div>
-            <span className="font-bold text-xl tracking-tight">GitFolio</span>
-          </div>
-
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 mb-8">
-            <img src={session?.user?.image || ""} alt="" className="w-10 h-10 rounded-full border border-white/10" />
-            <div className="overflow-hidden">
-              <div className="font-medium truncate">{session?.user?.name}</div>
-              <div className="text-xs text-gray-500 truncate">@{userUsername}</div>
-            </div>
-          </div>
-
-          <nav className="space-y-1">
-            <NavLink icon={<LayoutDashboard size={18} />} label="Dashboard" active />
-            <NavLink icon={<User size={18} />} label="Portfolio" href={`/${userUsername}`} />
-            <NavLink icon={<Notebook size={18} />} label="Notes" />
-            <NavLink icon={<Settings size={18} />} label="Settings" />
-          </nav>
-        </div>
-
-        <div className="mt-auto p-6">
-          <button 
-            onClick={() => signOut({ callbackUrl: "/" })}
-            className="flex items-center gap-3 text-gray-400 hover:text-red-400 transition-colors text-sm font-medium w-full text-left"
-          >
-            <LogOut size={18} />
-            Sign Out
-          </button>
-        </div>
-      </aside>
+      {/* Refactored Sidebar */}
+      <Sidebar username={stats?.username} />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-h-screen overflow-y-auto">
@@ -136,7 +104,6 @@ export default function DashboardPage() {
               {syncing ? "Syncing..." : "Refresh"}
             </Button>
             
-            {/* Share Modal Button */}
             <ShareCard username={userUsername} />
 
             <Link href={`/${userUsername}`}>
@@ -208,12 +175,11 @@ export default function DashboardPage() {
                     className="block"
                   >
                     <Card className="bg-white/[0.02] border-white/5 hover:bg-white/[0.04] transition-colors group cursor-pointer h-full">
-                      <CardContent className="p-4 flex flex-col h-full">
-                        <div className="flex justify-between items-start mb-2">
+                      <CardContent className="p-4 flex flex-col h-full text-left">
+                        <div className="flex justify-between items-start mb-2 text-left">
                           <h4 className="font-bold text-sm truncate group-hover:text-green-400 transition-colors">{repo.name}</h4>
-                          <ExternalLink size={12} className="text-gray-600 group-hover:text-gray-400" />
                         </div>
-                        <p className="text-xs text-gray-400 line-clamp-2 mb-4 flex-grow">
+                        <p className="text-xs text-gray-400 line-clamp-2 mb-4 flex-grow text-left">
                           {repo.description || "No description provided."}
                         </p>
                         <div className="flex items-center justify-between mt-auto">
@@ -269,21 +235,10 @@ export default function DashboardPage() {
   );
 }
 
-function NavLink({ icon, label, active, href }: { icon: any, label: string, active?: boolean, href?: string }) {
-  const content = (
-    <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm font-medium ${active ? 'bg-green-500 text-black shadow-[0_0_15px_rgba(74,222,128,0.3)]' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
-      {icon}
-      {label}
-    </div>
-  );
-
-  return href ? <Link href={href} className="block">{content}</Link> : <button className="block w-full text-left">{content}</button>;
-}
-
 function StatCard({ title, value, icon }: any) {
   return (
     <Card className="bg-white/[0.02] border-white/5 hover:bg-white/[0.04] transition-all hover:-translate-y-1">
-      <CardContent className="p-5">
+      <CardContent className="p-5 text-left">
         <div className="flex justify-between items-start mb-4">
           <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{title}</p>
           {icon}
