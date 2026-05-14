@@ -4,7 +4,8 @@ import {
   Github, MapPin, Link as LinkIcon, Star, GitFork, 
   ExternalLink, LayoutDashboard, Edit3, Save, X, Camera, Plus,
   Globe, Info, Image as ImageIcon, Mail, Linkedin, Instagram, Twitter, Trash2,
-  GitCommit
+  GitCommit,
+  Quote
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
