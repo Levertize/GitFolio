@@ -3,10 +3,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { Skeleton } from "@/components/ui/skeleton";
+import { motion, useInView } from "framer-motion";
 
 interface LanguageChartProps {
   languages: Record<string, number>;
   loading?: boolean;
+  accentColor?: string;
 }
 
 const LANGUAGE_COLORS: Record<string, string> = {
@@ -35,10 +37,16 @@ const LANGUAGE_COLORS: Record<string, string> = {
 
 const getLanguageColor = (lang: string) => LANGUAGE_COLORS[lang] || "#8b949e";
 
-const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = false }) => {
+const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = false, accentColor }) => {
   const donutRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [prefersReduced, setPrefersReduced] = useState(false);
+
+  useEffect(() => {
+    setPrefersReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   // Process data: Sort, group "Others"
   const sortedLangs = Object.entries(languages)
@@ -65,7 +73,7 @@ const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = fals
 
   // D3 Donut Chart
   useEffect(() => {
-    if (loading || processedLangs.length === 0 || !donutRef.current || dimensions.width === 0) return;
+    if (loading || processedLangs.length === 0 || !donutRef.current || dimensions.width === 0 || !isInView) return;
 
     const svg = d3.select(donutRef.current);
     svg.selectAll("*").remove();
@@ -108,7 +116,7 @@ const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = fals
     g.append("text")
       .attr("text-anchor", "middle")
       .attr("dy", "0.2em")
-      .attr("fill", "white")
+      .attr("fill", accentColor || "white")
       .style("font-size", "28px")
       .style("font-weight", "800")
       .text(`${processedLangs.length}`);
@@ -122,7 +130,7 @@ const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = fals
       .style("letter-spacing", "0.05em")
       .text("LANGUAGES");
 
-  }, [processedLangs, loading, dimensions.width]);
+  }, [processedLangs, loading, dimensions.width, isInView]);
 
   if (loading) {
     return (
@@ -147,40 +155,98 @@ const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = fals
     );
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -30 },
+    show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  };
+
   return (
     <div ref={containerRef} className="flex flex-col xl:flex-row gap-10 items-center p-2">
       {/* List */}
-      <div className="flex-1 w-full space-y-5">
-        {processedLangs.map(([lang, percent], i) => (
-          <div key={lang} className="group">
-            <div className="flex justify-between items-center text-sm mb-2">
-              <span className="font-semibold text-gray-200 flex items-center gap-3">
-                <div 
-                  className="w-3 h-3 rounded-sm" 
-                  style={{ backgroundColor: getLanguageColor(lang) }} 
+      {!prefersReduced ? (
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "show" : "hidden"}
+          className="flex-1 w-full space-y-5"
+        >
+          {processedLangs.map(([lang, percent], i) => (
+            <motion.div key={lang} variants={itemVariants} className="group">
+              <div className="flex justify-between items-center text-sm mb-2">
+                <span className="font-semibold text-gray-200 flex items-center gap-3">
+                  <div 
+                    className="w-3 h-3 rounded-sm" 
+                    style={{ backgroundColor: getLanguageColor(lang) }} 
+                  />
+                  {lang}
+                </span>
+                <span className="text-gray-400 font-mono font-bold">{percent}%</span>
+              </div>
+              <div className="h-2.5 bg-white/5 rounded-full overflow-hidden border border-white/[0.03]">
+                <div
+                  className="h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(0,0,0,0.3)]"
+                  style={{
+                    width: isInView ? `${percent}%` : "0%",
+                    backgroundColor: getLanguageColor(lang)
+                  }}
                 />
-                {lang}
-              </span>
-              <span className="text-gray-400 font-mono font-bold">{percent}%</span>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : (
+        <div className="flex-1 w-full space-y-5">
+          {processedLangs.map(([lang, percent]) => (
+            <div key={lang} className="group">
+              <div className="flex justify-between items-center text-sm mb-2">
+                <span className="font-semibold text-gray-200 flex items-center gap-3">
+                  <div 
+                    className="w-3 h-3 rounded-sm" 
+                    style={{ backgroundColor: getLanguageColor(lang) }} 
+                  />
+                  {lang}
+                </span>
+                <span className="text-gray-400 font-mono font-bold">{percent}%</span>
+              </div>
+              <div className="h-2.5 bg-white/5 rounded-full overflow-hidden border border-white/[0.03]">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${percent}%`,
+                    backgroundColor: getLanguageColor(lang)
+                  }}
+                />
+              </div>
             </div>
-            <div className="h-2.5 bg-white/5 rounded-full overflow-hidden border border-white/[0.03]">
-              <div
-                className="h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(0,0,0,0.3)]"
-                style={{
-                  width: `${percent}%`,
-                  backgroundColor: getLanguageColor(lang),
-                  transitionDelay: `${i * 120}ms`
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Donut Chart */}
-      <div className="shrink-0 flex justify-center items-center relative py-4 px-6">
-        <svg ref={donutRef} className="w-48 h-48 md:w-56 md:h-56 overflow-visible" />
-      </div>
+      {!prefersReduced ? (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+          className="shrink-0 flex justify-center items-center relative py-4 px-6"
+        >
+          <svg ref={donutRef} className="w-48 h-48 md:w-56 md:h-56 overflow-visible" />
+        </motion.div>
+      ) : (
+        <div className="shrink-0 flex justify-center items-center relative py-4 px-6">
+          <svg ref={donutRef} className="w-48 h-48 md:w-56 md:h-56 overflow-visible" />
+        </div>
+      )}
     </div>
   );
 };

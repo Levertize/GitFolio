@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { 
-  LayoutDashboard, User, Notebook, LogOut
+  LayoutDashboard, User, Notebook, LogOut, Settings
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,6 +48,12 @@ export function Sidebar() {
             label="Notes" 
             href="/dashboard/notes" 
             active={pathname.startsWith("/dashboard/notes")} 
+          />
+          <NavLink 
+            icon={<Settings size={18} />} 
+            label="Settings" 
+            href="/dashboard/settings" 
+            active={pathname === "/dashboard/settings"} 
           />
         </nav>
       </div>

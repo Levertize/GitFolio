@@ -22,7 +22,7 @@ async function getPortfolioData(username: string) {
       *,
       github_stats (*)
     `)
-    .ilike("username", searchName)
+    .or(`username.ilike.${searchName},custom_slug.ilike.${searchName}`)
     .maybeSingle();
 
   if (error || !user) {

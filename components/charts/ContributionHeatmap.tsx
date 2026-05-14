@@ -11,7 +11,8 @@ interface ContributionDay {
 
 interface ContributionHeatmapProps {
   data: ContributionDay[];
-  colorScheme?: "green" | "blue" | "purple";
+  colorScheme?: "green" | "blue" | "purple" | "orange" | "pink" | "cyan";
+  color?: string; // Hex color for custom scheme
   loading?: boolean;
   range?: "3m" | "6m" | "1y";
 }
@@ -20,11 +21,15 @@ const COLOR_SCHEMES = {
   green: ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"],
   blue: ["#161b22", "#113054", "#1a5fb4", "#3584e4", "#62a0ea"],
   purple: ["#161b22", "#381a54", "#613583", "#9141ac", "#c061cb"],
+  orange: ["#161b22", "#542a0e", "#b45309", "#f59e0b", "#fbbf24"],
+  pink: ["#161b22", "#540e2a", "#b41a5f", "#ec4899", "#f472b6"],
+  cyan: ["#161b22", "#0e4a54", "#0891b2", "#06b6d4", "#22d3ee"],
 };
 
 const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
   data,
   colorScheme = "green",
+  color,
   loading = false,
   range = "1y",
 }) => {
@@ -62,7 +67,9 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     const maxCount = d3.max(data, d => d.count) || 1;
-    const colors = COLOR_SCHEMES[colorScheme];
+    
+    // Determine colors
+    let colors = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || COLOR_SCHEMES.green;
 
     const getColor = (count: number) => {
       if (count === 0) return colors[0];
