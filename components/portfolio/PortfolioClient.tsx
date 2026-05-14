@@ -339,23 +339,23 @@ export default function PortfolioClient({ initialUser, session }: any) {
                   <FadeUp delay={0.5} className="flex flex-wrap gap-3 pt-2">
                     <a href={`https://github.com/${user.username}`} target="_blank" rel="noopener">
                       <Button 
-                        className="rounded-full px-6 font-bold shadow-lg transition-all bg-[var(--accent)] text-black hover:brightness-110 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(var(--accent-rgb),0.4)]"
+                        className="rounded-full px-6 font-bold shadow-lg transition-all border-none bg-[var(--accent)] text-black hover:bg-[var(--accent)] hover:brightness-110 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(var(--accent-rgb),0.4)] focus-visible:ring-[var(--accent)] active:scale-95"
                       >
                         <Github className="mr-2" size={18} /> Follow on GitHub
                       </Button>
                     </a>
-                    <Button variant="outline" className="rounded-full px-6 font-bold border-[var(--accent)]/30 hover:bg-[var(--accent)]/5 hover:scale-[1.03] transition-all">Hire Me</Button>
+                    <Button variant="outline" className="rounded-full px-6 font-bold border-[var(--accent)]/30 hover:bg-[var(--accent)]/5 hover:text-[var(--accent)] hover:scale-[1.03] transition-all focus-visible:ring-[var(--accent)] active:scale-95">Hire Me</Button>
                   </FadeUp>
                 ) : (
                   <div className="flex flex-wrap gap-3 pt-2">
                     <a href={`https://github.com/${user.username}`} target="_blank" rel="noopener">
                       <Button 
-                        className="rounded-full px-6 font-bold shadow-lg hover:shadow-[var(--accent)]/20 transition-all bg-[var(--accent)] text-black hover:brightness-110"
+                        className="rounded-full px-6 font-bold shadow-lg hover:shadow-[var(--accent)]/20 transition-all border-none bg-[var(--accent)] text-black hover:bg-[var(--accent)] hover:brightness-110 focus-visible:ring-[var(--accent)] active:scale-95"
                       >
                         <Github className="mr-2" size={18} /> Follow on GitHub
                       </Button>
                     </a>
-                    <Button variant="outline" className="rounded-full px-6 font-bold border-[var(--accent)]/30 hover:bg-[var(--accent)]/5">Hire Me</Button>
+                    <Button variant="outline" className="rounded-full px-6 font-bold border-[var(--accent)]/30 hover:bg-[var(--accent)]/5 hover:text-[var(--accent)] focus-visible:ring-[var(--accent)] active:scale-95">Hire Me</Button>
                   </div>
                 )}
               </div>

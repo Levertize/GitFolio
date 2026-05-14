@@ -774,7 +774,21 @@ export default function SettingsPage() {
 
           <footer className="pt-20 pb-24 text-center">
             <div className="h-px w-24 bg-white/5 mx-auto mb-6" />
-            <p className="text-[10px] text-gray-600 font-black uppercase tracking-[0.5em]">GitFolio &bull; Version 1.0.4</p>
+            <div className="flex flex-col items-center gap-4">
+              <p className="text-[10px] text-gray-600 font-black uppercase tracking-[0.5em]">GitFolio &bull; Version 1.0.4</p>
+              
+              <a 
+                href={`https://github.com/${user.username}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2.5 text-sm font-bold text-gray-300 hover:text-white transition-all duration-300 bg-white/[0.03] border border-white/10 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.08)] hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:bg-white/[0.08] hover:border-white/30"
+              >
+                <span className="relative">
+                  Made by Lev with <span className="text-pink-500 inline-block drop-shadow-[0_0_8px_rgba(236,72,153,0.8)] animate-pulse">❤️</span>
+                </span>
+                <Github size={16} className="text-gray-500 group-hover:text-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300" />
+              </a>
+            </div>
           </footer>
 
         </div>
