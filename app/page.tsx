@@ -38,7 +38,7 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-400">
             <Link href="#features" className="hover:text-white transition-colors">Features</Link>
             <Link href="#showcase" className="hover:text-white transition-colors">Showcase</Link>
-            <Link href="https://github.com/lev" className="hover:text-white transition-colors">GitHub</Link>
+            <Link href="https://github.com/levertize" className="hover:text-white transition-colors">GitHub</Link>
           </div>
 
           <form action={async () => { "use server"; await signIn("github", { redirectTo: "/dashboard" }); }}>
@@ -241,7 +241,7 @@ export default function Home() {
               <div className="space-y-4 col-span-2 sm:col-span-1">
                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Connect</h4>
                 <div className="flex gap-4">
-                  <a href="https://github.com/lev" target="_blank" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/50 hover:bg-green-400/5 transition-all">
+                  <a href="https://github.com/levertize" target="_blank" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/50 hover:bg-green-400/5 transition-all">
                     <Github size={20} />
                   </a>
                   <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-blue-400 hover:border-blue-400/50 hover:bg-blue-400/5 transition-all">
@@ -258,7 +258,7 @@ export default function Home() {
             </p>
             
             <a 
-              href="https://github.com/lev" 
+              href="https://github.com/levertize" 
               target="_blank" 
               className="flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 group hover:border-green-500/50 hover:bg-green-500/5 transition-all"
             >
