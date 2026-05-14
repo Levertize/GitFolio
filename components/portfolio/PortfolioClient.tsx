@@ -163,7 +163,6 @@ export default function PortfolioClient({ initialUser, session }: any) {
   const showSkills = !hiddenSections.includes("skills") || isEditing;
   const showProjects = !hiddenSections.includes("projects") || isEditing;
   const showHeatmap = !hiddenSections.includes("heatmap") || isEditing;
-  const showActivity = !hiddenSections.includes("activity") || isEditing;
   const showContact = isEditing || user.contact_email || user.linkedin_url || user.instagram_url || user.twitter_url || (user.custom_links && user.custom_links.length > 0);
 
   const shouldAnimate = !isEditing && !prefersReduced;
@@ -423,44 +422,6 @@ export default function PortfolioClient({ initialUser, session }: any) {
               </div>
             </div>
           </FadeUp>
-        )}
-
-        {/* 5. RECENT ACTIVITY */}
-        {showActivity && (
-          <section className="py-24 border-t">
-            <div className="container max-w-5xl mx-auto px-6">
-              <FadeUp className="space-y-2 text-left w-full mb-16">
-                <h2 className="text-3xl font-bold tracking-tight">Recent Activity</h2>
-                <p className="text-muted-foreground">Latest commits and events from GitHub.</p>
-              </FadeUp>
-              
-              <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
-                {displayStats.recent_activity.length > 0 ? displayStats.recent_activity.map((item: any, idx: number) => (
-                  <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${idx * 100}ms` }}>
-                    {/* Icon Circle */}
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/10 bg-black z-10 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:border-[var(--accent)]/50 group-hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)] transition-all">
-                      <GitCommit size={16} className="text-[var(--accent)]" />
-                    </div>
-                    
-                    {/* Content Card */}
-                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white/[0.02] border border-white/5 group-hover:border-[var(--accent)]/10 transition-all">
-                      <div className="flex items-center justify-between mb-2">
-                        <time className="text-[10px] font-black uppercase tracking-widest text-gray-500">{dayjs(item.date).fromNow()}</time>
-                        <Badge variant="outline" className="text-[9px] px-2 py-0 border-white/10 text-gray-500 group-hover:text-[var(--accent)] transition-colors">{item.repo_name}</Badge>
-                      </div>
-                      <p className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors leading-relaxed">
-                        {item.message}
-                      </p>
-                    </div>
-                  </div>
-                )) : (
-                  <div className="py-20 text-center border-2 border-dashed rounded-3xl opacity-50">
-                    <p className="text-sm font-medium">No recent activity found.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
         )}
 
         {/* 6. CONTACT SECTION */}

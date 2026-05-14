@@ -702,8 +702,7 @@ export default function SettingsPage() {
                   {[
                     { key: "skills", label: "Skills & Tech", desc: "Show your language distribution chart" },
                     { key: "projects", label: "Featured Projects", desc: "Display your selected repositories" },
-                    { key: "heatmap", label: "Contribution Activity", desc: "Show your GitHub heatmap" },
-                    { key: "activity", label: "Recent Activity", desc: "List your latest commits and events" }
+                    { key: "heatmap", label: "Contribution Activity", desc: "Show your GitHub heatmap" }
                   ].map((section) => {
                     const isHidden = hiddenSections.includes(section.key);
                     return (
