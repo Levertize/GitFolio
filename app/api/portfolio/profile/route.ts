@@ -9,7 +9,14 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const { headline, portfolio_about, custom_logo_url } = await request.json();
+    const { 
+      headline, 
+      portfolio_about, 
+      custom_logo_url,
+      what_i_do,
+      fun_facts,
+      availability
+    } = await request.json();
     const supabase = createAdminSupabase();
 
     const { data, error } = await supabase
@@ -18,6 +25,9 @@ export async function PUT(request: Request) {
         headline,
         portfolio_about,
         custom_logo_url,
+        what_i_do,
+        fun_facts,
+        availability,
         updated_at: new Date().toISOString(),
       })
       .eq("id", session.user.id)
