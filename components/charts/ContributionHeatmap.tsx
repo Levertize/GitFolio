@@ -37,7 +37,7 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const isInView = useInView(containerRef, { once: true, margin: "0px" });
   const [prefersReduced, setPrefersReduced] = useState(false);
 
   useEffect(() => {

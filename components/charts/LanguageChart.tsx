@@ -42,7 +42,7 @@ const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = fals
   const donutRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const isInView = useInView(containerRef, { once: true, margin: "0px" });
   const [prefersReduced, setPrefersReduced] = useState(false);
 
   useEffect(() => {

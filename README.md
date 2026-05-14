@@ -1,39 +1,54 @@
-# GitFolio
+<div align="center">
+  <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/github.svg" width="60" height="60" alt="GitFolio Logo" />
+  <h1>GitFolio</h1>
+  <p>A premium, automated developer portfolio and dashboard generated directly from your GitHub data.</p>
+</div>
 
-Auto-generated dev portfolio and coding dashboard from GitHub activity.
+---
 
-## Tech Stack
-- **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
-- **Backend:** NextAuth.js v5 (beta), Supabase (Postgres + Auth), Upstash Redis
-- **Charts:** D3.js
-- **Deployment:** Vercel
+## 🌟 Overview
 
-## Project Structure
-- `app/`: Next.js App Router pages and API routes.
-- `components/`: UI components (shadcn/ui), charts, and page-specific components.
-- `lib/`: Shared utility functions and service clients (GitHub, Supabase, Redis).
-- `hooks/`: Custom React hooks.
+GitFolio is a modern web application designed for developers (especially fresh graduates) who want to showcase their coding activity, repositories, and technical skills without the hassle of setting up a portfolio from scratch. 
 
-## Setup Instructions
+Simply log in with GitHub, and GitFolio automatically generates a beautiful, premium portfolio page complete with your contribution heatmap, top languages, and featured projects.
 
-1. **Clone the repository**
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Set up environment variables:**
-   Copy `.env.local` template and fill in the values:
-   - `NEXTAUTH_SECRET`: Generate using `openssl rand -base64 32`
-   - `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET`: Create a new OAuth App on GitHub
-   - `NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`: From your Supabase project settings
-   - `UPSTASH_REDIS_REST_URL` & `UPSTASH_REDIS_REST_TOKEN`: From your Upstash Redis console
-4. **Run development server:**
-   ```bash
-   npm run dev
-   ```
+## ✨ Features
 
-## Coding Standards
-- Strict TypeScript (no `any`).
-- Use Server Components where possible.
-- GitHub API calls must go through `lib/github.ts`.
-- Cache heavy data in Redis.
+- **Automated Portfolio Generation:** Fetches your GitHub stats, repositories, and contribution graph.
+- **Premium Aesthetics:** Modern UI with glassmorphism, glowing accents, and smooth Framer Motion animations.
+- **Dynamic Themes:** Customizable accent colors to match your personal brand.
+- **Interactive Dashboard:** Manage your profile, hide/show specific repositories, and customize your "About Me" section.
+- **Custom Links & Availability:** Add social links and a sleek "Open to Work" / "Freelance" availability badge.
+- **Custom Domain Ready:** Claim a custom slug (`gitfolio.app/your-name`) for a professional look.
+- **High Performance:** Cached heavily with Redis for instant load times.
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 14](https://nextjs.org/) (App Router, Server Components)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **Charts:** [D3.js](https://d3js.org/) (Custom Contribution Heatmap)
+- **Auth:** [NextAuth.js v5](https://authjs.dev/) (Auth.js)
+- **Database:** [Supabase](https://supabase.com/) (PostgreSQL)
+- **Caching:** [Upstash Redis](https://upstash.com/)
+- **Deployment:** [Vercel](https://vercel.com/)
+
+## 🚀 Quick Start
+
+For detailed step-by-step instructions including Database schemas and GitHub OAuth configuration, please see the [**DOCUMENTATION.md**](./DOCUMENTATION.md) file.
+
+### Basic Setup
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Copy `.env.example` to `.env.local` (See docs for variables)
+4. Run the development server: `npm run dev`
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+<div align="center">
+  <i>Made with ❤️ for the developer community.</i>
+</div>
