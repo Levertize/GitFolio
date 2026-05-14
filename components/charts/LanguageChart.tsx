@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, useInView } from "framer-motion";
+import StatNumber from "@/components/portfolio/StatNumber";
 
 interface LanguageChartProps {
   languages: Record<string, number>;
@@ -112,14 +113,19 @@ const LanguageChart: React.FC<LanguageChartProps> = ({ languages, loading = fals
         return function (t) { return arc(i(t)) || ""; };
       });
 
-    // Center Text
-    g.append("text")
-      .attr("text-anchor", "middle")
-      .attr("dy", "0.2em")
-      .attr("fill", accentColor || "white")
+    // Center Text (using foreignObject to render StatNumber)
+    g.append("foreignObject")
+      .attr("x", -40)
+      .attr("y", -20)
+      .attr("width", 80)
+      .attr("height", 40)
+      .append("xhtml:div")
+      .attr("class", "flex items-center justify-center h-full w-full")
+      .style("color", accentColor || "white")
       .style("font-size", "28px")
       .style("font-weight", "800")
-      .text(`${processedLangs.length}`);
+      .style("font-family", "sans-serif")
+      .html(`<span class="tabular-nums">${processedLangs.length}</span>`);
 
     g.append("text")
       .attr("text-anchor", "middle")

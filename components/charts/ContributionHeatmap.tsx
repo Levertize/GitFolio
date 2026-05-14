@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import dayjs from "dayjs";
+import { useInView } from "framer-motion";
 
 interface ContributionDay {
   date: string;
@@ -36,9 +37,15 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [prefersReduced, setPrefersReduced] = useState(false);
 
   useEffect(() => {
-    if (loading || !data || data.length === 0 || !svgRef.current) return;
+    setPrefersReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  useEffect(() => {
+    if (loading || !data || data.length === 0 || !svgRef.current || (prefersReduced === false && !isInView)) return;
 
     const svg = d3.select(svgRef.current);
     const tooltip = d3.select(tooltipRef.current);
@@ -121,13 +128,22 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
         return weekIndex * (cellSize + gap);
       })
       .attr("y", d => d.dayJS.day() * (cellSize + gap))
-      .style("opacity", 0)
-      .style("cursor", "pointer");
+      .style("cursor", "pointer")
+      .style("transform-origin", (d) => {
+        const weekIndex = d.dayJS.diff(startDate, 'week');
+        return `${weekIndex * (cellSize + gap) + cellSize / 2}px ${d.dayJS.day() * (cellSize + gap) + cellSize / 2}px`;
+      });
 
-    rects.transition()
-      .duration(500)
-      .delay((d) => d.dayJS.diff(startDate, 'week') * 15)
-      .style("opacity", 1);
+    if (!prefersReduced) {
+      rects.style("opacity", 0)
+           .style("animation", (d) => isInView ? `cellPop 0.3s ease forwards` : "none")
+           .style("animation-delay", (d) => {
+             const weekIndex = d.dayJS.diff(startDate, 'week');
+             return isInView ? `${weekIndex * 0.015}s` : "0s";
+           });
+    } else {
+      rects.style("opacity", 1);
+    }
 
     g.selectAll(".month")
       .data(months)
@@ -171,7 +187,7 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({
       tooltip.style("opacity", 0).style("display", "none");
     });
 
-  }, [data, loading, colorScheme, range]);
+  }, [data, loading, colorScheme, range, isInView, prefersReduced]);
 
 
   if (loading) {
