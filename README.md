@@ -1,9 +1,9 @@
 <div align="center">
+
   <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/github.svg" width="60" height="60" alt="GitFolio Logo" />
   <br/>
   <h1>🚀 GitFolio</h1>
   <p><strong>A premium, automated developer portfolio and dashboard generated directly from your GitHub data.</strong></p>
-
   <p>
     <a href="https://github.com/levertize/gitfolio"><img src="https://img.shields.io/github/stars/levertize/gitfolio?style=for-the-badge&color=4ade80&logo=github&logoColor=white" alt="GitHub stars" /></a>
     <a href="https://github.com/levertize/gitfolio/network/members"><img src="https://img.shields.io/github/forks/levertize/gitfolio?style=for-the-badge&color=3b82f6&logo=github&logoColor=white" alt="GitHub forks" /></a>
