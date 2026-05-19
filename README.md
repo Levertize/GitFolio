@@ -1,5 +1,4 @@
 <div align="center">
-  
   <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/github.svg" width="60" height="60" alt="GitFolio Logo" />
   <br/>
   <h1>🚀 GitFolio</h1>
